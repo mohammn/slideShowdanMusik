@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>mn-belajarweb.blogspot.com</title>
+    <link rel="stylesheet" href="css/style.css" />
+
+    <link rel="shortcut icon" href="foto/favicon.png" />
+    <script src="js/prefixfree.min.js"></script>
+
+    <style>
+        #animated-background {
+            animation: bgfade 100s infinite;
+            background-size: 100%;
+            background-color: #000;
+
+            background-repeat: no-repeat;
+        }
+
+        /****** add a background overlay *******/
+        #animated-background:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: black;
+            opacity: 0.3;
+        }
+    </style>
+    <style id="animasi">
+    </style>
+</head>
+
+<body id="animated-background">
+    <div class="modal fade" id="pilihFile" tabindex="-1" role="dialog" aria-labelledby="portfolioModal1Label"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                    <p><b>Selamat datang di penampil slide foto+musik</b>.<br />Apliaksi ini akan menampilkan slide
+                        show foto terpilih sekaligus memutarkan 1 musik yang kalian pilih. <br /> Silahkan pilih
+                        gambar dan juga musik yang ada di folder 'file' aplikasi ini. <br /> Jika tidak ada, silahkan
+                        pindah dulu secara manual ke folder 'file'
+                        dulu ya.<br />Pastikan nama gambar tidak ada karakter yang aneh.
+                        <br />Setiap aplikasi di refresh/dibuka ulang, maka kalian harus memilih ulang gambar dan musik
+                        yang
+                        ingin ditampilkan. Setelah musik dan gambar telah kalian pilih, silahkan klik 'Mulai'. enjoy :)
+                    </p>
+                    Pilih Foto : <input type="file" onchange="aktifkanTombol()" id="fileFoto" accept=".jpg, .png, .jpeg"
+                        multiple /><br /><br />
+                    Pilih Musik : <input type="file" onchange="aktifkanTombol()" id="fileMusik" accept=".mp3, .ogg" />
+                </div>
+                <button class="btn btn-success" id="tombolMulai" onClick="mulai()" type="button" data-dismiss="modal"
+                    aria-label="Close">
+                    Mulai
+                </button>
+            </div>
+        </div>
+    </div>
+    <audio preload id="pemutar" controls="controls" style="display: none;">
+        Browser anda tidak support audio HTML5 :(
+    </audio>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/jquery.easing.min.js"></script>
+    <script src="js/html5media.min.js"></script>
+    <script>
+        $("#pilihFile").modal("show")
+
+        function aktifkanTombol() {
+            if ($("fileFoto").val() && $("fileMusik").val()) {
+                $("tombolMulai").disable(false);
+            }
+        }
+
+        function mulai() {
+            mulaiSlide();
+            putarMusik();
+        }
+
+        function mulaiSlide() {
+            var hasil = '@keyframes bgfade {';
+            var data = $("#fileFoto").get(0).files;
+            var jumlahPersen = 0;
+            if (data) {
+                for (let j = 0; j < data.length; j++) {
+                    hasil += jumlahPersen + '% {background-image: url(' + "file/" + data[j].name.split(" ").join("%20") + ');}'
+                    jumlahPersen += 100 / data.length;
+                }
+                hasil += jumlahPersen + '% {background-image: url(' + "file/" + data[0].name.split(" ").join("%20") + ');}'
+                hasil += "}";
+            }
+            $("#animasi").html(hasil);
+        }
+
+        function putarMusik() {
+            var fileMusik = "./file/Cinta terbaik.mp3";
+            var data = $("#fileMusik").get(0).files;
+            if ($("#fileMusik")) {
+                fileMusik = "./file/" + data[0].name;
+            }
+            var audio = $("#pemutar")
+                .bind("ended", function () {
+                    putarMusik();
+                })
+                .get(0);
+            audio.src = fileMusik;
+            audio.play();
+        }
+    </script>
+</body>
